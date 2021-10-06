@@ -11,4 +11,5 @@ export interface AxiosReuestConfig{
   method?: Method
   data?: any
   params?: any
+  headers?: any
 }
