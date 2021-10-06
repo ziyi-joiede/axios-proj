@@ -68,7 +68,9 @@ axios({
     a: 1,
     b: 2
   }
-})
+}).then(res => [
+  console.log(res)
+])
 
 // const arr = new Int32Array([21, 31])
 
@@ -85,19 +87,23 @@ axios({
     'content-type': 'application/json',
     'Accept': 'application/json, text/plain, */*'
   },
+  responseType: 'json',
   data: {
     a: 1,
     b: 2
   }
+}).then(res => {
+  console.log(res);
+
 })
 
 
-const paramString = 'q=URLUtils.searchParams&topic=api'
+// const paramString = 'q=URLUtils.searchParams&topic=api'
 
-const searchParams = new URLSearchParams(paramString)
+// const searchParams = new URLSearchParams(paramString)
 
-axios({
-  method: 'post',
-  url: '/base/post',
-  data: searchParams
-})
+// axios({
+//   method: 'post',
+//   url: '/base/post',
+//   data: searchParams
+// })

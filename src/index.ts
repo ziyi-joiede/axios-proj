@@ -1,19 +1,23 @@
-import { AxiosReuestConfig } from './types'
+import { AxiosRequestConfig, AxiosPromise, AxiosResponse } from './types'
 import xhr from './xhr'
 import { buildURL } from './helpers/url'
-import { transformRequest } from './helpers/data'
+import { transformRequest, transformResponse } from './helpers/data'
 import { processHeaders } from './helpers/headers'
-function axios(config: AxiosReuestConfig):void {
+
+
+function axios(config: AxiosRequestConfig):AxiosPromise {
   processConfig(config)
   // TODO
-  xhr(config)
+  return xhr(config).then((res) => {
+    return transformResponseData(res)
+  })
 }
 
 /**
  * @description 处理 config
- * @param { AxiosReuestConfig } config 请求的配置参数
+ * @param { AxiosRequestConfig } config 请求的配置参数
  */
-function processConfig(config: AxiosReuestConfig):void {
+function processConfig(config: AxiosRequestConfig):void {
   config.url = transformURL(config)
   config.headers = transformHeaders(config)
   config.data = transformRequestData(config)
@@ -21,22 +25,27 @@ function processConfig(config: AxiosReuestConfig):void {
 
 /**
  * @description 转换 url
- * @param { AxiosReuestConfig } config 请求的配置参数
+ * @param { AxiosRequestConfig } config 请求的配置参数
  * @returns
  */
-function transformURL(config: AxiosReuestConfig):string {
+function transformURL(config: AxiosRequestConfig):string {
   const { url, params } = config
   return buildURL(url, params)
 }
 
-function transformRequestData(config: AxiosReuestConfig):any {
+function transformRequestData(config: AxiosRequestConfig):any {
   return transformRequest(config.data)
 }
 
 
-function transformHeaders(config: AxiosReuestConfig):any {
+function transformHeaders(config: AxiosRequestConfig):any {
   const { headers = {}, data } = config
   return processHeaders(headers, data)
+}
+
+function transformResponseData(res: AxiosResponse):AxiosResponse{
+  res.data = transformResponse(res.data)
+  return res
 }
 
 
