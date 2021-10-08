@@ -6,6 +6,9 @@ import {
 } from './types';
 
 import { parseHeaders } from './helpers/headers';
+import { createError } from './helpers/error'
+import { ECONNABORTED } from 'constants';
+
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise{
   return new Promise((resolve, reject) => {
@@ -14,7 +17,8 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise{
       url,
       method = 'get',
       headers,
-      responseType
+      responseType,
+      timeout
     } = config
 
     const request = new XMLHttpRequest()
@@ -23,10 +27,20 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise{
       request.responseType = responseType
     }
 
+    // 添加请求的超时
+    if(timeout) {
+      request.timeout = timeout
+    }
+
     request.open(method.toUpperCase(), url, true)
 
     request.onreadystatechange = function hendleLoad() {
       if(request.readyState !== 4) {
+        return
+      }
+
+      // 超时,发生网络错误时
+      if(request.status === 0) {
         return
       }
 
@@ -41,7 +55,17 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise{
         request
       }
 
-      resolve(response)
+      handleResponse(response)
+    }
+
+    // 处理网络异常
+    request.onerror = function healdeError() {
+      reject(createError('Network Error', config, null, request))
+    }
+
+    // 处理超时
+    request.ontimeout = function handleTimeout() {
+      reject(createError(`Timeout of ${timeout} ms exceeded`, config, 'ECONNABORTED', request))
     }
 
     // 把 headers 设置在 http 请求的头部
@@ -55,6 +79,14 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise{
     })
 
     request.send(data)
+
+    function handleResponse(response: AxiosResponse):void {
+      if(response.status >= 200 && response.status < 300) {
+        resolve(response)
+      }else {
+        reject(createError(`Response failed with status code ${response.status}`, config, null, request, response))
+      }
+    }
   })
 
 }

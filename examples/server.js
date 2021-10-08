@@ -52,6 +52,26 @@ router.post('/base/buffer', function(req,res) {
   })
 })
 
+router.get('/error/get', (req, res) => {
+  if(Math.random() > 0.5) {
+    res.json({
+      msg: `hello world`
+    })
+  }else {
+    res.status(500)
+    res.end()
+  }
+})
+
+router.get('/error/timeout', (req, res) => {
+  this.setTimeout( _ => {
+    res.json({
+      msg: `hello world`
+    })
+  }, 3000)
+})
+
+
 app.use(router)
 
 const port = process.env.PORT || 8080
