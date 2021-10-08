@@ -1,20 +1,25 @@
-import { normalize } from 'path';
 import { isPlainObject } from './util';
 
 
-function normalizeHeaderName(headers: any, normalizeName: string): void {
+function normalizeHeaderName(headers: any, normalizedName: string): void {
   if(!headers) {
     return
   }
   Object.keys(headers).forEach(key => {
-    if(key !== normalizeName && key.toUpperCase() === normalizeName.toUpperCase()) {
-      headers[normalizeName] = headers[key]
+    if(key !== normalizedName && key.toUpperCase() === normalizedName.toUpperCase()) {
+      headers[normalizedName] = headers[key]
       delete headers[key]
     }
   })
 }
 
-export function processHeaders(headers: any, data: any):any {
+/**
+ * @description 处理请求的 headers
+ * @param { object } headers 请求的 headers 对象
+ * @param { any } data 请求的 data 对象
+ * @returns
+ */
+export function processHeaders(headers: any, data: any): any {
 
   normalizeHeaderName(headers, 'Content-Type')
 
@@ -27,8 +32,13 @@ export function processHeaders(headers: any, data: any):any {
   return headers
 }
 
+/**
+ * @description 处理响应的 headers
+ * @param { string } headers 响应的 headers
+ * @returns
+ */
 export function parseHeaders(headers: string):any {
-  let parsed = Object.create(null)
+  const parsed = Object.create(null)
 
   if(!headers){
     return parsed

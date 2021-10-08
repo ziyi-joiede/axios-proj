@@ -16,14 +16,13 @@ export interface AxiosRequestConfig{
 }
 
 export interface AxiosResponse {
-  data: any
+  data: any // 响应数据
   status: number
   statusText: string
-  headers: any
+  headers: any  // 响应头
   config: AxiosRequestConfig
   request: any
 }
 
-export interface AxiosPromise extends Promise<AxiosPromise> {
-
+export interface AxiosPromise extends Promise<AxiosResponse> {
 }
