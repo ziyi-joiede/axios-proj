@@ -1,13 +1,14 @@
 
+// 定义 xhr 函数(发送 XMLHttpRequest 请求)
+
 import {
   AxiosRequestConfig,
   AxiosResponse,
   AxiosPromise
-} from './types';
+} from '../types';
 
-import { parseHeaders } from './helpers/headers';
-import { createError } from './helpers/error'
-import { ECONNABORTED } from 'constants';
+import { parseHeaders } from '../helpers/headers'
+import { createError } from '../helpers/error'
 
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise{
