@@ -12,7 +12,7 @@ export default class InterceptorManager<T> {
     this.interceptors = []
   }
 
-  use(resolved: ResolvedFn<T>, rejected?:RejectedFn):number {
+  use(resolved: ResolvedFn<T>, rejected?: RejectedFn): number {
     this.interceptors.push({
       resolved,
       rejected
@@ -21,7 +21,7 @@ export default class InterceptorManager<T> {
     return this.interceptors.length - 1
   }
 
-  forEach(fn: (interceptor: Interceptor<T>) => void):void {
+  forEach(fn: (interceptor: Interceptor<T>) => void): void {
     this.interceptors.forEach(interceptor => {
       if(interceptor !== null) {
         fn(interceptor)
@@ -30,8 +30,8 @@ export default class InterceptorManager<T> {
   }
 
   eject(id: number): void {
-    if(this.interceptors[id]){
-      this.interceptors[id]= null
+    if(this.interceptors[id]) {
+      this.interceptors[id] = null
     }
   }
 }
